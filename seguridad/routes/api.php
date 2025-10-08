@@ -14,6 +14,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     
     // Solo Admin puede acceder a estas rutas
     Route::group(['middleware' => 'admin.only'], function () {
+        Route::get('/{id}', [UserController::class,'get_user']);
         Route::get('/users', [UserController::class,'get_users']);
         Route::get('/professors', [UserController::class,'get_professors']);
     });

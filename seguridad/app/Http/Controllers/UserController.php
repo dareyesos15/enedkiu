@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function get_user($id){
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        return response()->json($user, 200);
+    }
+
     public function get_users(){
         $users = User::all();
         return response()->json($users, 200);
