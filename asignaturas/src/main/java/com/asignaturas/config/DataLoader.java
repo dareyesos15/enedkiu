@@ -24,11 +24,11 @@ public class DataLoader implements CommandLineRunner {
         asignaturaRepository.deleteAll();
         
         // Crear asignaturas de ejemplo
-        Asignatura matematicas = new Asignatura("Matemáticas Avanzadas", "Facultad de Ciencias", "Dr. Carlos Ruiz", "G01");
-        Asignatura fisica = new Asignatura("Física Cuántica", "Facultad de Ciencias", "Dra. María González", "G02");
-        Asignatura programacion = new Asignatura("Programación Java", "Facultad de Ingeniería", "Ing. Pedro Martínez", "G03");
-        Asignatura historia = new Asignatura("Historia Universal", "Facultad de Humanidades", "Lic. Ana López", "G04");
-        Asignatura economia = new Asignatura("Economía Internacional", "Facultad de Economía", "Mtro. Roberto Díaz", "G05");
+        Asignatura matematicas = new Asignatura("Matemáticas Avanzadas", "Facultad de Ciencias", 2L, "G01");
+        Asignatura fisica = new Asignatura("Física Cuántica", "Facultad de Ciencias", 5L, "G02");
+        Asignatura programacion = new Asignatura("Programación Java", "Facultad de Ingeniería", 4L, "G03");
+        Asignatura historia = new Asignatura("Historia Universal", "Facultad de Humanidades", 6L, "G04");
+        Asignatura economia = new Asignatura("Economía Internacional", "Facultad de Economía", 7L, "G05");
         
         // Guardar asignaturas
         matematicas = asignaturaRepository.save(matematicas);
@@ -39,26 +39,26 @@ public class DataLoader implements CommandLineRunner {
         
         // Crear inscripciones de estudiantes
         // Estudiante 101 inscrito en 3 asignaturas
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(101L, matematicas));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(101L, programacion));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(101L, historia));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(8L, matematicas));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(8L, programacion));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(8L, historia));
         
         // Estudiante 102 inscrito en 2 asignaturas
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(102L, fisica));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(102L, economia));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(9L, fisica));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(9L, economia));
         
         // Estudiante 103 inscrito en 4 asignaturas
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(103L, matematicas));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(103L, fisica));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(103L, programacion));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(103L, economia));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(10L, matematicas));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(10L, fisica));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(10L, programacion));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(10L, economia));
         
         // Estudiante 104 inscrito en 1 asignatura
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(104L, historia));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(11L, historia));
         
         // Estudiante 105 inscrito en 2 asignaturas
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(105L, programacion));
-        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(105L, economia));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(11L, programacion));
+        asignaturaEstudianteRepository.save(new AsignaturaEstudiante(11L, economia));
         
         System.out.println("Datos de ejemplo cargados correctamente");
         System.out.println("Asignaturas creadas: " + asignaturaRepository.count());

@@ -12,7 +12,7 @@ import java.util.List;
 public interface AsignaturaRepository extends JpaRepository<Asignatura, Long> {
     List<Asignatura> findByNombreContainingIgnoreCase(String nombre);
     List<Asignatura> findByFacultad(String facultad);
-    List<Asignatura> findByProfesorContainingIgnoreCase(String profesor);
+    List<Asignatura> findByProfesorId(Long profesorId);  // Nuevo método
     
     @Query("SELECT ae.asignatura FROM AsignaturaEstudiante ae WHERE ae.estudianteId = :estudianteId")
     List<Asignatura> findAsignaturasByEstudianteId(@Param("estudianteId") Long estudianteId);

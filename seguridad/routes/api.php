@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 
 Route::post('/create_user', [UserController::class,'create_user']);
 Route::post('/login', [UserController::class,'login']);
+Route::get('/{id}', [UserController::class,'get_user']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [UserController::class,'logout']);
@@ -14,7 +15,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     
     // Solo Admin puede acceder a estas rutas
     Route::group(['middleware' => 'admin.only'], function () {
-        Route::get('/{id}', [UserController::class,'get_user']);
+        //Route::get('/{id}', [UserController::class,'get_user']);
         Route::get('/users', [UserController::class,'get_users']);
         Route::get('/professors', [UserController::class,'get_professors']);
     });

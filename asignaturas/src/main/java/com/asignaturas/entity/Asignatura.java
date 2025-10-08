@@ -18,8 +18,8 @@ public class Asignatura {
     @Column(name = "facultad", nullable = false, length = 100)
     private String facultad;
     
-    @Column(name = "profesor", nullable = false, length = 100)
-    private String profesor;
+    @Column(name = "profesor_id", nullable = false)
+    private Long profesorId;  
     
     @Column(name = "grupo", nullable = false, length = 50)
     private String grupo;
@@ -27,17 +27,17 @@ public class Asignatura {
     @OneToMany(mappedBy = "asignatura", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AsignaturaEstudiante> estudiantes = new ArrayList<>();
     
-    // Constructores, Getters y Setters
+    // Constructores
     public Asignatura() {}
     
-    public Asignatura(String nombre, String facultad, String profesor, String grupo) {
+    public Asignatura(String nombre, String facultad, Long profesorId, String grupo) {
         this.nombre = nombre;
         this.facultad = facultad;
-        this.profesor = profesor;
+        this.profesorId = profesorId;
         this.grupo = grupo;
     }
     
-    // Getters y Setters (generar todos)
+    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -47,8 +47,8 @@ public class Asignatura {
     public String getFacultad() { return facultad; }
     public void setFacultad(String facultad) { this.facultad = facultad; }
     
-    public String getProfesor() { return profesor; }
-    public void setProfesor(String profesor) { this.profesor = profesor; }
+    public Long getProfesorId() { return profesorId; }
+    public void setProfesorId(Long profesorId) { this.profesorId = profesorId; }
     
     public String getGrupo() { return grupo; }
     public void setGrupo(String grupo) { this.grupo = grupo; }

@@ -1,82 +1,93 @@
 package com.asignaturas.controller;
 
-import com.asignaturas.entity.Asignatura;
-import com.asignaturas.entity.AsignaturaEstudiante;
+import com.asignaturas.dto.*;
 import com.asignaturas.service.AsignaturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/asignaturas")
-@CrossOrigin(origins = "*") // Para permitir requests desde frontend
+@CrossOrigin(origins = "*")
 public class AsignaturaController {
     
     @Autowired
     private AsignaturaService asignaturaService;
+
+    // ========== ASIGNATURAS - CRUD COMPLETO ==========
     
-    // ASIGNATURAS - CRUD
     @GetMapping
-    public List<Asignatura> getAllAsignaturas() {
-        return asignaturaService.findAllAsignaturas();
+    public List<AsignaturaDTO> obtenerTodasAsignaturas() {
+        return asignaturaService.obtenerTodasAsignaturas();
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Asignatura> getAsignaturaById(@PathVariable Long id) {
-        Optional<Asignatura> asignatura = asignaturaService.findAsignaturaById(id);
-        return asignatura.map(ResponseEntity::ok)
-                        .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<AsignaturaDTO> obtenerAsignaturaPorId(@PathVariable Long id) {
+        return asignaturaService.obtenerAsignaturaPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/{id}/detalles")
+    public ResponseEntity<AsignaturaConDetallesDTO> obtenerAsignaturaConDetalles(@PathVariable Long id) {
+        return asignaturaService.obtenerAsignaturaConDetalles(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping
-    public Asignatura createAsignatura(@RequestBody Asignatura asignatura) {
-        return asignaturaService.saveAsignatura(asignatura);
+    public AsignaturaDTO crearAsignatura(@RequestBody AsignaturaDTO asignaturaDTO) {
+        return asignaturaService.crearAsignatura(asignaturaDTO);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<Asignatura> updateAsignatura(@PathVariable Long id, @RequestBody Asignatura asignaturaDetails) {
-        Optional<Asignatura> asignatura = asignaturaService.findAsignaturaById(id);
-        if (asignatura.isPresent()) {
-            Asignatura asignaturaExistente = asignatura.get();
-            asignaturaExistente.setNombre(asignaturaDetails.getNombre());
-            asignaturaExistente.setFacultad(asignaturaDetails.getFacultad());
-            asignaturaExistente.setProfesor(asignaturaDetails.getProfesor());
-            asignaturaExistente.setGrupo(asignaturaDetails.getGrupo());
-            return ResponseEntity.ok(asignaturaService.saveAsignatura(asignaturaExistente));
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<AsignaturaDTO> actualizarAsignatura(
+            @PathVariable Long id, 
+            @RequestBody AsignaturaDTO asignaturaDTO) {
+        return asignaturaService.actualizarAsignatura(id, asignaturaDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAsignatura(@PathVariable Long id) {
-        if (asignaturaService.findAsignaturaById(id).isPresent()) {
-            asignaturaService.deleteAsignatura(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> eliminarAsignatura(@PathVariable Long id) {
+        return asignaturaService.eliminarAsignatura(id) 
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
+
+    // ========== BÚSQUEDAS ==========
     
-    // BÚSQUEDAS
     @GetMapping("/buscar/nombre")
-    public List<Asignatura> getAsignaturasByNombre(@RequestParam String nombre) {
-        return asignaturaService.findAsignaturasByNombre(nombre);
+    public List<AsignaturaDTO> buscarPorNombre(@RequestParam String nombre) {
+        return asignaturaService.buscarPorNombre(nombre);
     }
     
     @GetMapping("/buscar/facultad")
-    public List<Asignatura> getAsignaturasByFacultad(@RequestParam String facultad) {
-        return asignaturaService.findAsignaturasByFacultad(facultad);
+    public List<AsignaturaDTO> buscarPorFacultad(@RequestParam String facultad) {
+        return asignaturaService.buscarPorFacultad(facultad);
     }
     
-    // GESTIÓN DE ESTUDIANTES
-    @PostMapping("/{asignaturaId}/estudiantes/{estudianteId}")
-    public ResponseEntity<AsignaturaEstudiante> inscribirEstudiante(
+    @GetMapping("/buscar/profesor/{profesorId}")
+    public List<AsignaturaDTO> buscarPorProfesor(@PathVariable Long profesorId) {
+        return asignaturaService.buscarPorProfesor(profesorId);
+    }
+    
+    @GetMapping("/buscar/estudiante/{estudianteId}")
+    public List<AsignaturaDTO> buscarPorEstudiante(@PathVariable Long estudianteId) {
+        return asignaturaService.buscarPorEstudiante(estudianteId);
+    }
+
+    // ========== GESTIÓN DE ESTUDIANTES ==========
+    
+    @PostMapping("/{asignaturaId}/estudiantes")
+    public ResponseEntity<AsignaturaEstudianteDTO> inscribirEstudiante(
             @PathVariable Long asignaturaId, 
-            @PathVariable Long estudianteId) {
+            @RequestBody InscripcionRequestDTO request) {
         try {
-            AsignaturaEstudiante inscripcion = asignaturaService.inscribirEstudiante(asignaturaId, estudianteId);
+            AsignaturaEstudianteDTO inscripcion = asignaturaService.inscribirEstudiante(asignaturaId, request.getEstudianteId());
             return ResponseEntity.ok(inscripcion);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -87,26 +98,32 @@ public class AsignaturaController {
     public ResponseEntity<Void> desinscribirEstudiante(
             @PathVariable Long asignaturaId, 
             @PathVariable Long estudianteId) {
-        try {
-            asignaturaService.desinscribirEstudiante(asignaturaId, estudianteId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    
-    @GetMapping("/estudiante/{estudianteId}")
-    public List<Asignatura> getAsignaturasByEstudiante(@PathVariable Long estudianteId) {
-        return asignaturaService.findAsignaturasByEstudianteId(estudianteId);
+        return asignaturaService.desinscribirEstudiante(asignaturaId, estudianteId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
     
     @GetMapping("/{asignaturaId}/estudiantes")
-    public List<AsignaturaEstudiante> getEstudiantesByAsignatura(@PathVariable Long asignaturaId) {
-        return asignaturaService.findEstudiantesByAsignaturaId(asignaturaId);
+    public List<AsignaturaEstudianteDTO> obtenerEstudiantesDeAsignatura(@PathVariable Long asignaturaId) {
+        return asignaturaService.obtenerEstudiantesDeAsignatura(asignaturaId);
+    }
+    
+    @GetMapping("/{asignaturaId}/estudiantes/detalles")
+    public List<UsuarioDTO> obtenerEstudiantesConDetalles(@PathVariable Long asignaturaId) {
+        return asignaturaService.obtenerEstudiantesConDetalles(asignaturaId);
     }
     
     @GetMapping("/{asignaturaId}/estudiantes/count")
-    public Long countEstudiantesByAsignatura(@PathVariable Long asignaturaId) {
+    public Long contarEstudiantesEnAsignatura(@PathVariable Long asignaturaId) {
         return asignaturaService.contarEstudiantesEnAsignatura(asignaturaId);
+    }
+
+    // ========== GESTIÓN DE PROFESORES ==========
+    
+    @GetMapping("/{asignaturaId}/profesor")
+    public ResponseEntity<UsuarioDTO> obtenerProfesorDeAsignatura(@PathVariable Long asignaturaId) {
+        return asignaturaService.obtenerProfesorDeAsignatura(asignaturaId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
