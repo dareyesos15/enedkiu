@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,6 +13,36 @@ class UserController extends Controller
     public function get_users(){
         $users = User::all();
         return response()->json($users, 200);
+    }
+
+     /**
+     * Obtener todos los usuarios con rol de profesor
+     */
+    public function get_professors()
+    {
+        $professors = User::whereHas('roles', function($query) {
+            $query->where('name', 'professor');
+        })->get();
+
+        return response()->json([
+            'professors' => $professors,
+            'count' => $professors->count()
+        ], 200);
+    }
+
+    /**
+     * Obtener todos los usuarios con rol de estudiante
+     */
+    public function get_students()
+    {
+        $students = User::whereHas('roles', function($query) {
+            $query->where('name', 'student');
+        })->get();
+
+        return response()->json([
+            'students' => $students,
+            'count' => $students->count()
+        ], 200);
     }
 
     public function create_user(Request $request)

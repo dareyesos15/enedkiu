@@ -49,13 +49,20 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function hasRole($role)
+    /**
+     * Verificar si el usuario tiene un rol específico
+     */
+    public function hasRole($roleName)
     {
-        if (is_string($role)) {
-            return $this->roles->contains('name', $role);
-        }
+        return $this->roles()->where('name', $roleName)->exists();
+    }
 
-        return !! $role->intersect($this->roles)->count();
+    /**
+     * Verificar si el usuario tiene alguno de los roles especificados
+     */
+    public function hasAnyRole($roles)
+    {
+        return $this->roles()->whereIn('name', (array)$roles)->exists();
     }
 
     public function assignRole($role)
