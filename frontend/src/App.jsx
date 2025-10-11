@@ -1,34 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+
 import './App.css'
 
+// Asumiendo que Plantilla también es una exportación por defecto
+import Plantilla from './components/Plantilla'
+
+// Importaciones de páginas principales
+import Inicio from './pages/Inicio'
+import Cursos from './pages/Cursos'
+import Mensajes from './pages/Mensajes'
+import Reportes from './pages/Reportes'
+
+// Importaciones de páginas de usuario
+import InicioSesion from './pages/user/InicioSesion'
+import Perfil from './pages/user/Perfil'
+import Registro from './pages/user/Registro'
+import GestionUsuarios from './pages/user/GestionUsuarios'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const componentes = [
+    [Inicio, "/"],
+    [Cursos, "/cursos"],
+    [Mensajes, "/mensajes"],
+    [Reportes, "/reportes"],
+    [InicioSesion, "/inicio-sesion"],
+    [Perfil, "/perfil"],
+    [Registro, "/registro"],
+    [GestionUsuarios, "/gestion-usuarios"],
+  ]
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Routes>
+        {componentes.map(([Componente, path]) => (
+          <Route key={path} path={path} element={<Componente />} />
+        ))}
+      </Routes>
+      
+      <Plantilla componentes={componentes} />
     </>
+    
   )
 }
 
