@@ -31,16 +31,19 @@ function App() {
   ]
 
   return (
-    <>
-      <Routes>
-        {componentes.map(([Componente, path]) => (
-          <Route key={path} path={path} element={<Componente />} />
-        ))}
-      </Routes>
-      
-      <Plantilla componentes={componentes} />
-    </>
-    
+    <Routes>
+      {componentes.map(([Componente, path]) => (
+        <Route
+          key={path}
+          path={path}
+          element={
+            <Plantilla>
+              <Componente />
+            </Plantilla>
+          }
+        />
+      ))}
+    </Routes>
   )
 }
 

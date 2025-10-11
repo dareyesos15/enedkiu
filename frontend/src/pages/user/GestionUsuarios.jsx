@@ -2,7 +2,9 @@ import React from 'react'
 
 function GestionUsuarios() {
   return (
-    <div>Usuarios</div>
+    <div>
+      <h3 className='section-title'>Gestiona los usuarios del sistema</h3>
+    </div>
   )
 }
 

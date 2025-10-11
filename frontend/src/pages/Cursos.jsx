@@ -2,7 +2,9 @@ import React from 'react'
 
 function Cursos() {
   return (
-    <div>Cursos</div>
+    <div>
+      <h3 className='section-title'>Accede a tus cursos</h3>
+    </div>
   )
 }
 
