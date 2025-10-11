@@ -10,27 +10,49 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function get_user($id){
-        $user = User::find($id);
+    public function get_user($id)
+    {
+        // Cargar el usuario con su relación de roles
+        $user = User::with('roles')->find($id);
+
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
+
+        // Añadir el campo 'rol' con el nombre del primer rol encontrado
+        $user->rol = $user->roles->first()->name ?? null;
+
         return response()->json($user, 200);
     }
 
-    public function get_users(){
-        $users = User::all();
+    public function get_users()
+    {
+        // Cargar todos los usuarios con su relación de roles
+        $users = User::with('roles')->get();
+
+        // Mapear la colección para añadir el campo 'rol' a cada usuario
+        $users->map(function ($user) {
+            $user->rol = $user->roles->first()->name ?? null;
+            return $user;
+        });
+
         return response()->json($users, 200);
     }
 
-     /**
+    /**
      * Obtener todos los usuarios con rol de profesor
      */
     public function get_professors()
     {
-        $professors = User::whereHas('roles', function($query) {
+        $professors = User::whereHas('roles', function ($query) {
             $query->where('name', 'professor');
         })->get();
+
+        // Mapear la colección para añadir explícitamente el campo 'rol'
+        $professors->map(function ($professor) {
+            $professor->rol = 'professor';
+            return $professor;
+        });
 
         return response()->json([
             'professors' => $professors,
@@ -43,9 +65,15 @@ class UserController extends Controller
      */
     public function get_students()
     {
-        $students = User::whereHas('roles', function($query) {
+        $students = User::whereHas('roles', function ($query) {
             $query->where('name', 'student');
         })->get();
+
+        // Mapear la colección para añadir explícitamente el campo 'rol'
+        $students->map(function ($student) {
+            $student->rol = 'student';
+            return $student;
+        });
 
         return response()->json([
             'students' => $students,
@@ -67,7 +95,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -86,10 +114,13 @@ class UserController extends Controller
             }
 
             // Eliminar el token actual
-            $request->user()->currentAccessToken()->delete();
-            
+            $token = $request->user()->currentAccessToken();
+            if ($token) {
+                $token->delete();
+            }
+
             return response()->json(['message' => 'Sesión cerrada correctamente']);
-            
+
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al cerrar sesión'], 500);
         }
