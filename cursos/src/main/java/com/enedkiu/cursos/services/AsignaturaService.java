@@ -1,7 +1,5 @@
 package com.enedkiu.cursos.services;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,8 +13,8 @@ public class AsignaturaService {
     @Autowired
     AsignaturaRepository asignaturaRepository;
 
-    public ArrayList<AsignaturaModel> getAllAsignaturas() {
-        return (ArrayList<AsignaturaModel>) asignaturaRepository.findAll();
+    public Iterable<AsignaturaModel> getAllAsignaturas() {
+        return asignaturaRepository.findAll();
     }
 
     public AsignaturaModel getOneAsignatura(Long asignaturaId) {

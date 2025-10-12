@@ -1,7 +1,5 @@
 package com.enedkiu.cursos.controllers;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +14,8 @@ public class AsignaturaController {
     @Autowired
     AsignaturaService asignaturaService;
 
-    @GetMapping("/")
-    public ArrayList<AsignaturaModel> getAllAsignaturas() {
+    @GetMapping()
+    public Iterable<AsignaturaModel> getAllAsignaturas() {
         return asignaturaService.getAllAsignaturas();
     }
 
@@ -26,7 +24,7 @@ public class AsignaturaController {
         return asignaturaService.getOneAsignatura(asignaturaId);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public AsignaturaModel saveAsignatura(@RequestBody AsignaturaModel asignatura) {
         return asignaturaService.saveAsignatura(asignatura);
     }
@@ -37,8 +35,8 @@ public class AsignaturaController {
     }
     
     @DeleteMapping("/{asignaturaId}")
-    public void deleteAsignatura(@PathVariable Long id) {
-        asignaturaService.deleteAsignatura(id);
+    public void deleteAsignatura(@PathVariable Long asignaturaId) {
+        asignaturaService.deleteAsignatura(asignaturaId);
     }
     
 }

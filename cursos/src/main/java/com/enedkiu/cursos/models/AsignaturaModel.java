@@ -1,5 +1,6 @@
 package com.enedkiu.cursos.models;
 
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity // especifica que la clase es una entidad
@@ -13,6 +14,21 @@ public class AsignaturaModel {
     private String nombre;
     private String departamento;
     private String descripcion;
+
+    //Relacion con la tabla cursos
+    @OneToMany(mappedBy = "asignatura", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CursoModel> cursos;
+
+    //constructores
+    public AsignaturaModel() {
+
+    }
+
+    public AsignaturaModel(String nombre, String departamento, String descripcion) {
+        this.nombre = nombre;
+        this.departamento = departamento;
+        this.descripcion = descripcion;
+    }
 
     // metodos getter y setter
     public Long getId() {
@@ -47,5 +63,4 @@ public class AsignaturaModel {
         this.descripcion = descripcion;
     }
 
-    
 }
