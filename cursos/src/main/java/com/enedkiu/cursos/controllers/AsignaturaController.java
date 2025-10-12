@@ -31,7 +31,7 @@ public class AsignaturaController {
 
     @PutMapping("/{asignaturaId}")
     public AsignaturaModel updateAsignatura(@PathVariable Long asignaturaId, @RequestBody AsignaturaModel asignatura) {
-        return asignaturaService.updateAsginatura(asignaturaId, asignatura);
+        return asignaturaService.updateAsignatura(asignaturaId, asignatura);
     }
     
     @DeleteMapping("/{asignaturaId}")

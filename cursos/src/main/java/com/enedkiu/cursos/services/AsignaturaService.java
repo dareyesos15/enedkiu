@@ -19,14 +19,14 @@ public class AsignaturaService {
 
     public AsignaturaModel getOneAsignatura(Long asignaturaId) {
         return asignaturaRepository.findById(asignaturaId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public AsignaturaModel saveAsignatura(AsignaturaModel asignatura) {
         return asignaturaRepository.save(asignatura);
     }
 
-    public AsignaturaModel updateAsginatura(Long asignaturaId, AsignaturaModel newAsginatura) {
+    public AsignaturaModel updateAsignatura(Long asignaturaId, AsignaturaModel newAsginatura) {
         return asignaturaRepository
         .findById(asignaturaId).map(asignatura -> {
 
