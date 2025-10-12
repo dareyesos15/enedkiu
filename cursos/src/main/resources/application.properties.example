@@ -1,0 +1,8 @@
+spring.application.name=cursos
+
+spring.datasource.url=http://localhost:3306/cursos
+spring.datasource.username=root
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=update #Si queremos que la base de datos se cree automaticamente
+spring.jpa.hibernate.ddl-auto=none/create/create-drop 
