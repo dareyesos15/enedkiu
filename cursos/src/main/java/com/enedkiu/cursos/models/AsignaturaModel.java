@@ -1,12 +1,16 @@
 package com.enedkiu.cursos.models;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity // especifica que la clase es una entidad
 @Table(name = "asignatura") // nombre que tendrá en la base de datos
 public class AsignaturaModel {
-    // atributos
+
+    // --- Campos ---
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -17,9 +21,10 @@ public class AsignaturaModel {
 
     //Relacion con la tabla cursos
     @OneToMany(mappedBy = "asignatura", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<CursoModel> cursos;
 
-    //constructores
+    // --- constructores ---
     public AsignaturaModel() {
 
     }
@@ -30,7 +35,7 @@ public class AsignaturaModel {
         this.descripcion = descripcion;
     }
 
-    // metodos getter y setter
+    // --- metodos getter y setter ---
     public Long getId() {
         return id;
     }

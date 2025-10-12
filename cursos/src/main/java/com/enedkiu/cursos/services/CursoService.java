@@ -17,9 +17,17 @@ public class CursoService {
         return cursoRepository.findAll();
     }
 
+    public Iterable<CursoModel> getCursosByEstudianteId(Long estudianteId) {
+        return cursoRepository.findByEstudiantesIdContaining(estudianteId);
+    }
+
+    public Iterable<CursoModel> getCursosByProfesorId(Long profesorId) {
+        return cursoRepository.findByProfesorId(profesorId);
+    }
+
     public CursoModel getOneCurso(Long cursoId) {
         return cursoRepository.findById(cursoId)
-               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public CursoModel saveCurso(CursoModel curso) {
@@ -28,13 +36,13 @@ public class CursoService {
 
     public CursoModel updateCurso(Long cursoId, CursoModel newCurso) {
         return cursoRepository
-        .findById(cursoId).map(curso -> {
+                .findById(cursoId).map(curso -> {
 
-            curso.setProfesor_id(newCurso.getProfesor_id());
+                    curso.setProfesorId(newCurso.getProfesorId());
 
-            return cursoRepository.save(curso);
-        })
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                    return cursoRepository.save(curso);
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public void deleteCurso(Long cursoId) {

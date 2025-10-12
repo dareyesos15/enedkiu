@@ -1,30 +1,45 @@
 package com.enedkiu.cursos.models;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity // especifica que la clase es una entidad
 @Table(name = "curso") // nombre que tendrá en la base de datos
 public class CursoModel {
+
+    // --- Campos ---
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
-    private Long profesor_id;
+
+    @Column(unique = true, nullable = false)
     private String nombre;
 
-    //crear nueva tabla para la relacion estudiante-curso
+    // crear nueva tabla para la relacion estudiante-curso
     @ElementCollection
     @CollectionTable(name = "estudiante_curso", joinColumns = @JoinColumn(name = "curso_id"))
     @Column(name = "estudiante_id")
-    private List<Long> estudiantes_id;
+    private List<Long> estudiantesId;
+
+    private Long profesorId;
 
     // relación con la tabla asignaturas
     @ManyToOne
     @JoinColumn(name = "asignatura_id", nullable = false)
+    @JsonBackReference
     private AsignaturaModel asignatura; // Asignatura a la que pertenece el curso
 
-    //metodos getter y setter
+    // relacion con la tabla tareas
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<TareaModel> tareas;
+
+    // --- metodos getter y setter ---
     public Long getId() {
         return id;
     }
@@ -33,12 +48,12 @@ public class CursoModel {
         this.id = id;
     }
 
-    public Long getProfesor_id() {
-        return profesor_id;
+    public Long getProfesorId() {
+        return profesorId;
     }
 
-    public void setProfesor_id(Long profesor_id) {
-        this.profesor_id = profesor_id;
+    public void setProfesorId(Long profesor_id) {
+        this.profesorId = profesor_id;
     }
 
     public String getNombre() {
@@ -49,12 +64,12 @@ public class CursoModel {
         this.nombre = nombre;
     }
 
-    public List<Long> getEstudiantes_id() {
-        return estudiantes_id;
+    public List<Long> getEstudiantesId() {
+        return estudiantesId;
     }
 
-    public void setEstudiantes_id(List<Long> estudiantes_id) {
-        this.estudiantes_id = estudiantes_id;
+    public void setEstudiantesId(List<Long> estudiantes_id) {
+        this.estudiantesId = estudiantes_id;
     }
 
     public AsignaturaModel getAsignatura() {
@@ -65,7 +80,12 @@ public class CursoModel {
         this.asignatura = asignatura;
     }
 
-    // metodos getter y setter
-    
+    public List<TareaModel> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(List<TareaModel> tareas) {
+        this.tareas = tareas;
+    }
 
 }
