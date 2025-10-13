@@ -108,6 +108,13 @@ def get_all_tareas() -> List[Dict]:
     data = _make_get_request("/tareas")
     return data if isinstance(data, list) else []
 
+def get_tarea_by_id(tarea_id: int) -> Dict[str, Any] | None:
+    """Obtiene la información detallada de una tarea específica por ID."""
+    print(f"Obteniendo tarea con ID: {tarea_id}...")
+    # El endpoint /api/tareas/{tareaId} devuelve un único objeto (Diccionario)
+    data = _make_get_request(f"/tareas/{tarea_id}")
+    return data if isinstance(data, dict) else None
+
 def get_notas_by_tarea(tarea_id: int) -> List[Dict]:
     """Obtiene la lista de notas (calificaciones) de una tarea específica."""
     print(f"Obteniendo notas para la tarea ID: {tarea_id}...")
