@@ -3,8 +3,10 @@ package com.enedkiu.cursos.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.enedkiu.cursos.models.NotaModel;
 import com.enedkiu.cursos.models.TareaModel;
 import com.enedkiu.cursos.services.TareaService;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/tareas")
@@ -36,4 +38,11 @@ public class TareaController {
     public void deleteTarea(@PathVariable Long tareaId) {
         tareaService.deleteTarea(tareaId);
     }
+
+    // Notas de una tarea
+    @GetMapping("/{tareaId}/notas")
+    public Iterable<NotaModel> getTareas(@PathVariable Long tareaId) {
+        return tareaService.getOneTarea(tareaId).getNotas();
+    }
+    
 }

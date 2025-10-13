@@ -32,8 +32,7 @@ public class TareaService {
 
                     tarea.setTitulo(newTarea.getTitulo());
                     tarea.setDescripcion(newTarea.getDescripcion());
-                    tarea.setNota(newTarea.getNota());
-                    tarea.setEntregado(newTarea.isEntregado());
+                    tarea.setFechaEntrega(newTarea.getFechaEntrega());
 
                     return tareaRepository.save(tarea);
                 })
@@ -43,4 +42,5 @@ public class TareaService {
     public void deleteTarea(Long tareaId) {
         tareaRepository.deleteById(tareaId);
     }
+
 }

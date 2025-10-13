@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity // especifica que la clase es una entidad
-@Table(name = "asignatura") // nombre que tendrá en la base de datos
+@Table(name = "asignaturas") // nombre que tendrá en la base de datos
 public class AsignaturaModel {
 
     // --- Campos ---

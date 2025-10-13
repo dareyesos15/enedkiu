@@ -1,8 +1,10 @@
 package com.enedkiu.cursos.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
@@ -23,9 +25,12 @@ public class TareaModel {
 
     private String titulo;
     private String descripcion;
-    private Float nota;
-    private boolean entregado;
     private LocalDateTime fechaEntrega;
+
+    //Relacion con la tabla notas
+    @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<NotaModel> notas;
 
     // --- metodos getter y setter ---
 
@@ -61,22 +66,6 @@ public class TareaModel {
         this.descripcion = descripcion;
     }
 
-    public Float getNota() {
-        return nota;
-    }
-
-    public void setNota(Float nota) {
-        this.nota = nota;
-    }
-
-    public boolean isEntregado() {
-        return entregado;
-    }
-
-    public void setEntregado(boolean entregado) {
-        this.entregado = entregado;
-    }
-
     public LocalDateTime getFechaEntrega() {
         return fechaEntrega;
     }
@@ -84,4 +73,14 @@ public class TareaModel {
     public void setFechaEntrega(LocalDateTime fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
+
+    public List<NotaModel> getNotas() {
+        return notas;
+    }
+
+    public void setNotas(List<NotaModel> notas) {
+        this.notas = notas;
+    }
+
+    
 }

@@ -13,3 +13,6 @@
 - /api/cursos/profesor/{profesorId} (Cursos del profesor)
 - /api/cursos/estudiante/{estudianteId} (Cursos del estudiante)
 - /api/tareas (REST)
+- /api/tareas/{tareaid}/notas
+- /api/notas (REST sin getAll)
+- /api/notas/estudiante/{estudianteId}
