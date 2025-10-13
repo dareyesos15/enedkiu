@@ -1,18 +1,21 @@
 # Microservicios de mensajería de la aplicación
 
 ## Tecnologías
+**Python-Flask + MongoDB**
 
-**Flask + MongoDB**
+## Dependencias
+- **Python3:** https://www.python.org/downloads/
+- **MongoDB Compass:** https://www.mongodb.com/try/download/atlas-kubernetes-operator
 
-## Distribución del proyecto
+## levantar el microservicio en servidor local
+- **Crear entorno virtual de python (recomendado):** `python -m venv venv`
+- **Iniciar entorno virtual de python** `./venv/Scripts/activate`
+- **Instalar dependencias de python** `pip install -r requeriments.txt`
 
-## Despliegue local del proyecto
+## Servidor de desarrollo
+`http://localhost:5000`
 
-**Crear entorno virtual de python (recomendado)**
-**comando:** `python -m venv venv`
-
-**Instalar dependencias de python**
-**comando** `pip install -r requeriments.txt`
-
-**Iniciar entorno virtual de python**
-**comando Windows Powershell:** `.\venv\Scripts\activate`
+## Endpoints
+- /api/mensajes (REST)
+- /api/mensajes/remitente/{remitente_id}
+- /api/mensajes/receptor/{receptor_id}

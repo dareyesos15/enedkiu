@@ -21,6 +21,25 @@ def mensajes_todos():
     json_response = json_util.dumps(mensajes_list)
     return Response(json_response, status=200, mimetype='application/json')
 
+@api.route('/mensajes/<id>', methods=['GET'])
+def mensaje_uno(id):
+    try:
+        # Convertir el string del id a un ObjectId de MongoDB
+        object_id = ObjectId(id)
+    except Exception:
+        return jsonify({'mensaje': 'El ID proporcionado no es válido.'}), 400
+
+    # Intentar actualizar el documento
+    mensaje = db.find_one({"_id": object_id})
+    print(mensaje)
+
+    if mensaje:
+        json_response = json_util.dumps(mensaje)
+        return Response(json_response, status=200, mimetype='application/json')
+
+    else:
+        return jsonify({'mensaje': 'Mensaje no encontrado.'}), 404
+
 @api.route('/mensajes/remitente/<int:remitente_id>', methods=['GET'])
 def mensajes_por_remitente(remitente_id):
     query = {
