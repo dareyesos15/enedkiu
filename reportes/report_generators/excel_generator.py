@@ -60,7 +60,7 @@ def generar_reporte_curso_excel(curso_id: int):
     # La columna 'Promedio' será calculada al final.
     for est_id, nombre in estudiantes_map.items():
         reporte_filas.append({
-            'ID Estudiante': str(est_id),
+            'ID Estudiante': est_id,
             'Nombre Completo': nombre,
             'Promedio': 0.0 # Placeholder
         })
@@ -83,11 +83,11 @@ def generar_reporte_curso_excel(curso_id: int):
         
         for nota in notas_tarea:
             est_id = nota.get('estudianteId')
-            calificacion = nota.get('calificacion')
+            calificacion = nota.get('calificacion') 
             
             if est_id in df_reporte.index:
                 # Asignamos la nota a la celda correspondiente
-                df_reporte.loc[est_id, tarea_titulo] = calificacion
+                df_reporte.loc[est_id, tarea_titulo] = calificacion 
                 # Guardamos la nota para el cálculo del promedio
                 notas_por_estudiante[est_id].append(calificacion)
 
