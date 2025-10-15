@@ -1,5 +1,6 @@
 package com.enedkiu.cursos.controllers;
 
+import com.enedkiu.cursos.dto.CursoSaveDTO;
 import com.enedkiu.cursos.dto.CursoUpdateDTO;
 import com.enedkiu.cursos.models.CursoModel;
 import com.enedkiu.cursos.models.TareaModel;
@@ -29,7 +30,7 @@ public class CursoController {
     }
 
     @PostMapping()
-    public CursoModel saveCurso(@RequestBody CursoModel Curso) {
+    public CursoModel saveCurso(@RequestBody CursoSaveDTO Curso) {
         return cursoService.saveCurso(Curso);
     }
 

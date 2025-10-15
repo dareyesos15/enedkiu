@@ -15,8 +15,7 @@ describe('Test de funcionalidad para el microservicio "cursos"', () => {
             "nombre": "Prueba Func",
             "estudiantesId": [ 8, 9],
             "profesorId": 2,
-            "tareas": [ 1, 2]
-        }
+            "asignaturaId": 1,        }
 
         cy.request('POST', API_URL, newCurso).then((response) => {
             expect(response.status).to.eq(200)
@@ -30,7 +29,7 @@ describe('Test de funcionalidad para el microservicio "cursos"', () => {
     it('Debe mostrar el curso creado (GET /{cursoId})', () => {
         cy.request('GET', API_URL+`/${createdCursoId}`).then((response) => {
             expect(response.status).to.eq(200)
-            expect(response.body).to.have.property('id', createdUserId)
+            expect(response.body).to.have.property('id', createdCursoId)
             expect(response.body).to.have.property('nombre', createdCursoNombre)
         })
     })
@@ -40,13 +39,18 @@ describe('Test de funcionalidad para el microservicio "cursos"', () => {
             "nombre": "Prueba Func modificado",
             "estudiantesId": [ 8, 9],
             "profesorId": 4,
-            "tareas": [ 1, 2]
         }
 
-        cy.request('PUT', API_URL+`/${createdUserId}`, modifyUser).then((response) => {
+        cy.request('PUT', API_URL+`/${createdCursoId}`, modifyCurso).then((response) => {
             expect(response.status).to.eq(200)
             expect(response.body).to.have.property('id')
-            expect(response.body.name).to.eq(modifyUser.name)
+            expect(response.body.nombre).to.eq(modifyCurso.nombre)
+        })
+    })
+
+    it('Debe eliminar el curso creado (DELETE)', () => {
+        cy.request('DELETE', API_URL+`/${createdCursoId}`).then((response) => {
+            expect(response.status).to.eq(200)
         })
     })
 })
