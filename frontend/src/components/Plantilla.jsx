@@ -19,7 +19,7 @@ const Plantilla = ({ children }) => {
             <div className="col-md-auto">
               <div className="user-section">
                 <div className="btn-group">
-                  <NavLink to="/inicio-sesion" className="btn btn-outline-light btn-header">
+                  <NavLink to="/inicio-sesion" className="btn btn-outline-light btn-header" id="login-btn">
                     Iniciar Sesión
                   </NavLink>
                   <NavLink to="/registro" className="btn btn-outline-light btn-header">
