@@ -3,13 +3,13 @@ from flask import Blueprint, jsonify, request, Response, send_file
 from report_generators.excel_generator import *
 from report_generators.pdf_generator import *
 
-api = Blueprint('api', __name__, url_prefix="/api")
+api = Blueprint('api', __name__, url_prefix="/api/reportes")
 
 # -------------------------------------------------------------------
 # REPORTES DE ESTUDIANTE (Visión del Alumno/Administrador)
 # -------------------------------------------------------------------
 
-@api.route('/reportes/estudiante/<int:estudiante_id>', methods=['GET'])
+@api.route('/estudiante/<int:estudiante_id>', methods=['GET'])
 def get_reporte_estudiante(estudiante_id: int):
     """
     Endpoint para generar el reporte consolidado de notas de un estudiante.
@@ -31,7 +31,7 @@ def get_reporte_estudiante(estudiante_id: int):
 # REPORTES DE CURSO (Visión del Profesor/Administrador)
 # -------------------------------------------------------------------
 
-@api.route('/reportes/curso/<int:curso_id>', methods=['GET'])
+@api.route('/curso/<int:curso_id>', methods=['GET'])
 def get_reporte_curso(curso_id: int):
     """
     Endpoint para generar el reporte de calificaciones detallado de un curso.
@@ -53,7 +53,7 @@ def get_reporte_curso(curso_id: int):
 # REPORTES DE TAREAS (Visión del Profesor/Administrador)
 # -------------------------------------------------------------------
 
-@api.route('/reportes/tarea/<int:tarea_id>', methods=['GET'])
+@api.route('/tarea/<int:tarea_id>', methods=['GET'])
 def get_reporte_tarea(tarea_id: int):
     """
     Endpoint para generar un reporte que lista todas las notas de una tarea específica.

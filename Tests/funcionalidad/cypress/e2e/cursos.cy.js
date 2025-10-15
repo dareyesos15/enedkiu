@@ -34,7 +34,7 @@ describe('Test de funcionalidad para el microservicio "cursos"', () => {
         })
     })
 
-    it('Debe modificar el usuario creado (PUT)', () => {
+    it('Debe modificar el curso creado (PUT)', () => {
         const modifyCurso = {  
             "nombre": "Prueba Func modificado",
             "estudiantesId": [ 8, 9],

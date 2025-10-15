@@ -3,7 +3,7 @@ from database.mongo_connection import db
 from bson import json_util
 from bson.objectid import ObjectId
 
-api = Blueprint('api', __name__)
+api = Blueprint('api', __name__, url_prefix='/api')
 
 """METODOS GET"""
 @api.route('/mensajes', methods=['GET'])
