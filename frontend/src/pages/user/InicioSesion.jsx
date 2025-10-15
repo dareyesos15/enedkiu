@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { login } from '../../scripts/ApiSeguridad'; // Ajusta la ruta según tu estructura
+import { useNavigate, redirect } from 'react-router-dom'
 
 function InicioSesion() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null); // Limpia errores previos
+    e.preventDefault()
+    setError(null) // Limpia errores previos
     try {
-      const data = await login({ email, password });
-      console.log('Login exitoso:', data);
+      const data = await login({ email, password })
+      console.log('Login exitoso:', data)
       // Aquí guardarías el token en el estado global o en localStorage
       // y redirigirías al usuario.
-      // localStorage.setItem('authToken', data.token);
+      // localStorage.setItem('authToken', data.token)
+      return navigate('/')
     } catch (err) {
-      setError(err.message);
+      setError(err.message)
     }
-  };
+  }
 
   return (
     <div className="container mt-5">
@@ -64,7 +67,7 @@ function InicioSesion() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default InicioSesion;
+export default InicioSesion
