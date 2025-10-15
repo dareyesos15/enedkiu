@@ -5,13 +5,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.enedkiu.cursos.dto.CursoUpdateDTO;
+import com.enedkiu.cursos.models.AsignaturaModel;
 import com.enedkiu.cursos.models.CursoModel;
+import com.enedkiu.cursos.repositories.AsignaturaRepository;
 import com.enedkiu.cursos.repositories.CursoRepository;
+import com.enedkiu.cursos.repositories.TareaRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CursoService {
     @Autowired
     CursoRepository cursoRepository;
+
+    @Autowired 
+    AsignaturaRepository asignaturaRepository;
+
+    @Autowired
+    TareaRepository tareaRepository;
 
     public Iterable<CursoModel> getAllCursos() {
         return cursoRepository.findAll();
@@ -34,15 +46,31 @@ public class CursoService {
         return cursoRepository.save(curso);
     }
 
-    public CursoModel updateCurso(Long cursoId, CursoModel newCurso) {
-        return cursoRepository
-                .findById(cursoId).map(curso -> {
+    @Transactional
+    public CursoModel updateCurso(Long cursoId, CursoUpdateDTO cursoDto) {
+        // 1. Obtener el Curso existente (debe estar dentro de la transacción)
+        CursoModel curso = cursoRepository.findById(cursoId)
+            .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + cursoId));
 
-                    curso.setProfesorId(newCurso.getProfesorId());
+        // 2. Actualizar campos simples
+        if (cursoDto.getNombre() != null) {
+            curso.setNombre(cursoDto.getNombre());
+        }
+        if (cursoDto.getProfesorId() != null) {
+            curso.setProfesorId(cursoDto.getProfesorId());
+        }
+        if (cursoDto.getEstudiantesId() != null) {
+            curso.setEstudiantesId(cursoDto.getEstudiantesId());
+        }
 
-                    return cursoRepository.save(curso);
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // 3. Manejar la relación Uno-a-Uno (Asignatura)
+        if (cursoDto.getAsignaturaId() != null) {
+            AsignaturaModel nuevaAsignatura = asignaturaRepository.findById(cursoDto.getAsignaturaId())
+                .orElseThrow(() -> new RuntimeException("Asignatura no encontrada con ID: " + cursoDto.getAsignaturaId()));
+            curso.setAsignatura(nuevaAsignatura); 
+        }
+
+        return cursoRepository.save(curso);
     }
 
     public void deleteCurso(Long cursoId) {

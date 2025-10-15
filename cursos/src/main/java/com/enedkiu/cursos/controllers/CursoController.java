@@ -1,5 +1,6 @@
 package com.enedkiu.cursos.controllers;
 
+import com.enedkiu.cursos.dto.CursoUpdateDTO;
 import com.enedkiu.cursos.models.CursoModel;
 import com.enedkiu.cursos.models.TareaModel;
 import com.enedkiu.cursos.services.CursoService;
@@ -33,8 +34,8 @@ public class CursoController {
     }
 
     @PutMapping("/{cursoId}")
-    public CursoModel updateCurso(@PathVariable Long cursoId, @RequestBody CursoModel Curso) {
-        return cursoService.updateCurso(cursoId, Curso);
+    public CursoModel updateCurso(@PathVariable Long cursoId, @RequestBody CursoUpdateDTO cursoDto) {
+        return cursoService.updateCurso(cursoId, cursoDto);
     }
     
     @DeleteMapping("/{cursoId}")
