@@ -10,5 +10,5 @@
 ## levantar el microservicio en servidor local
 `npm install && npm run dev`
 
-## Servidor de desarrollo
+## Url de servidor local de desarrollo
 `http://localhost:5173`

@@ -12,7 +12,7 @@
 - **Instalar dependencias de laravel:** `composer update`
 - **Iniciar servicio:** `php artisan serve`
 
-## Servidor de desarrollo
+## Url de servidor local de desarrollo
 `http://localhost:8000`
 
 ## Endpoints 

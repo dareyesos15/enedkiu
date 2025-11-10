@@ -10,7 +10,7 @@
 ## levantar el microservicio en servidor local
 `./mvnw spring-boot:run` (en gitbash)
 
-## Servidor de desarrollo
+## Url de servidor local de desarrollo
 `http://localhost:8080`
 
 ## Endpoints 

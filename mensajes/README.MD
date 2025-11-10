@@ -12,7 +12,7 @@
 - **Iniciar entorno virtual de python** `./venv/Scripts/activate`
 - **Instalar dependencias de python** `pip install -r requeriments.txt`
 
-## Servidor de desarrollo
+## Url de Servidor local de desarrollo por defecto
 `http://localhost:5000`
 
 ## Endpoints

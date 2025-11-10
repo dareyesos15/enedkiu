@@ -12,7 +12,7 @@ Ser recomienda crear un entorno virtual de python y utilizar el comando `pip ins
 ## levantar el microservicio en servidor local
 `flask --app app run --port 5001`
 
-## Servidor de desarrollo
+## Url de servidor local de desarrollo  
 `http://localhost:5001`
 
 ## Endpoints
