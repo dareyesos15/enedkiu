@@ -1,0 +1,64 @@
+# ============================================
+# DOCKERFILE - MICROSERVICIO CURSOS
+# ============================================
+
+# Etapa 1: Build de la aplicación
+FROM maven:3.8.4-openjdk-11 AS builder
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de configuración de Maven
+COPY pom.xml .
+COPY src ./src
+
+# Descargar dependencias y construir el JAR
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Imagen de ejecución
+FROM openjdk:11-jre-slim
+
+# Metadatos
+LABEL maintainer="enedkiu"
+LABEL description="Microservicio de Cursos"
+LABEL version="1.0.0"
+
+# Instalar dependencias del sistema
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear usuario y grupo para la aplicación
+RUN groupadd -r spring && useradd -r -g spring spring
+
+# Crear directorios necesarios
+RUN mkdir -p /app/logs && chown -R spring:spring /app
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Cambiar al usuario no-root
+USER spring
+
+# Copiar el JAR desde la etapa de build
+COPY --from=builder --chown=spring:spring /app/target/*.jar app.jar
+
+# Exponer puerto
+EXPOSE 8080
+
+# Variables de entorno por defecto
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV DB_HOST=mysql-cursos
+ENV DB_PORT=3306
+ENV DB_NAME=microservicio_cursos
+ENV DB_USERNAME=root
+ENV DB_PASSWORD=password
+ENV API_KEY=prod_api_key_secure_123
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Comando de ejecución
+ENTRYPOINT ["java", "-jar", "app.jar"]

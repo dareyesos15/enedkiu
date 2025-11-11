@@ -1,8 +1,36 @@
-spring.application.name=cursos
+# ============================================
+# CONFIGURACIÓN DESARROLLO - MICROSERVICIO CURSOS
+# ============================================
 
-spring.datasource.url=jdbc:mysql://localhost:3306/
+# Configuración básica
+spring.application.name=cursos-service
+server.port=8080
+
+# Base de datos - Desarrollo local
+spring.datasource.url=jdbc:mysql://localhost:3306/microservicio_cursos
 spring.datasource.username=root
-spring.datasource.password=
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-spring.jpa.hibernate.ddl-auto=update #Si queremos que la base de datos se cree automaticamente
-spring.jpa.hibernate.ddl-auto=none/create/create-drop 
+# JPA & Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+# Seguridad - Desarrollo (menos restrictiva)
+app.api.key=ingenieria_de_software_2
+app.security.enabled=true
+
+# Logging - Detallado para desarrollo
+logging.level.com.enedkiu.cursos=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+# Configuración del pool de conexiones
+spring.datasource.hikari.maximum-pool-size=5
+spring.datasource.hikari.minimum-idle=2
+
+# Health check
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
