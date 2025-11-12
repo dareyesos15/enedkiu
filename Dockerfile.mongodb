@@ -1,0 +1,22 @@
+# Imagen base oficial de MongoDB
+FROM mongo:7.0
+
+# Variables de entorno por defecto (puedes sobreescribirlas en docker-compose o al crear el contenedor)
+ENV MONGO_INITDB_ROOT_USERNAME=root
+ENV MONGO_INITDB_ROOT_PASSWORD=root123
+ENV MONGO_INITDB_DATABASE=mensajes
+
+# Directorio de trabajo
+WORKDIR /data/db
+
+# Copiar scripts de inicialización opcionales
+# Cualquier archivo .js o .sh en /docker-entrypoint-initdb.d se ejecutará al iniciar el contenedor
+# COPY ./init-scripts/ /docker-entrypoint-initdb.d/
+
+# Exponer el puerto por defecto de MongoDB
+EXPOSE 27017
+
+# Comando de inicio del contenedor
+CMD ["mongod"]
+
+## funciona :)

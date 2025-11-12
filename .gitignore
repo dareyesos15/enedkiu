@@ -60,7 +60,7 @@ logs/
 # Archivos de configuración local (NO subir credenciales)
 application.properties
 application-dev.properties
-application-production.properties
+application-prod.properties
 !src/main/resources/application.properties
 
 # Archivos de base de datos

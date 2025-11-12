@@ -16,6 +16,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiKeyInterceptor)
                 .addPathPatterns("/api/**") // Aplicar a todas las rutas bajo /api
-                .excludePathPatterns("/health", "/actuator/health"); // Excluir health checks
+                .excludePathPatterns("/health", "/actuator/health", "/actuator/info"); // Excluir health checks
     }
 }

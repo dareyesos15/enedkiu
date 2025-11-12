@@ -1,0 +1,53 @@
+# Etapa 1: Construcción con Composer
+FROM composer:2.7 AS vendor
+
+WORKDIR /app
+
+# Copiamos los archivos de Composer primero (para aprovechar la caché de Docker)
+COPY composer.json composer.lock ./
+
+# Instalamos dependencias (sin dev para producción)
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# Copiamos todo el código del proyecto
+COPY . .
+
+# Generamos autoload y ejecutamos scripts post-install
+RUN composer dump-autoload --optimize
+
+
+# Etapa 2: Imagen de aplicación PHP con Laravel
+FROM php:latest
+
+# Instalar dependencias del sistema necesarias para Laravel y extensiones PHP
+RUN apk add --no-cache \
+    bash \
+    zip \
+    unzip \
+    curl \
+    git \
+    libpng-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    icu-dev \
+    sqlite \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl
+
+# Configurar directorio de trabajo
+WORKDIR /var/www/html
+
+# Copiar los archivos del proyecto desde la etapa anterior
+COPY --from=vendor /app ./
+
+# Copiar el archivo .env.example (opcional)
+# COPY .env.example .env
+
+# Ajustar permisos (importante para Laravel)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Exponer el puerto del servidor PHP-FPM
+EXPOSE 9000
+
+# Comando por defecto (para usar con Nginx o php artisan serve)
+CMD ["php-fpm"]
