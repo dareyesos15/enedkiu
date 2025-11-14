@@ -1,22 +1,26 @@
-# Imagen base oficial de MongoDB
-FROM mongo:7.0
+# ============================================
+# DOCKERFILE - MONGODB PARA MICROSERVICIO MENSAJES
+# ============================================
 
-# Variables de entorno por defecto (puedes sobreescribirlas en docker-compose o al crear el contenedor)
-ENV MONGO_INITDB_ROOT_USERNAME=root
-ENV MONGO_INITDB_ROOT_PASSWORD=root123
-ENV MONGO_INITDB_DATABASE=mensajes
+# Usar la imagen oficial de MongoDB
+FROM mongo:6.0
 
-# Directorio de trabajo
-WORKDIR /data/db
+# Metadatos
+LABEL maintainer="enedkiu"
+LABEL description="MongoDB para Microservicio de Mensajes"
+LABEL version="1.0.0"
 
-# Copiar scripts de inicialización opcionales
-# Cualquier archivo .js o .sh en /docker-entrypoint-initdb.d se ejecutará al iniciar el contenedor
-# COPY ./init-scripts/ /docker-entrypoint-initdb.d/
+# Crear directorio para scripts de inicialización
+RUN mkdir -p /docker-entrypoint-initdb.d
 
-# Exponer el puerto por defecto de MongoDB
+# Copiar script de inicialización (opcional)
+COPY init-mongo.js /docker-entrypoint-initdb.d/
+
+# Exponer puerto de MongoDB
 EXPOSE 27017
 
-# Comando de inicio del contenedor
-CMD ["mongod"]
+# Volumen para persistencia de datos
+VOLUME /data/db
 
-## funciona :)
+# Comando por defecto (ya viene en la imagen oficial)
+CMD ["mongod", "--bind_ip_all"]

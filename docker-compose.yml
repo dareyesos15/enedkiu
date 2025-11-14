@@ -1,6 +1,48 @@
 version: '3.8'
 
 services:
+    # Microservicio de Mensajes
+  mensajes-service:
+    build:
+      context: ./mensajes
+      dockerfile: Dockerfile.mensajes
+    container_name: mensajes_service
+    ports:
+      - "5001:5001"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/mensajes_db
+      - API_KEY=ingenieria_de_software_2
+      - FLASK_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - mensajes-network
+    restart: unless-stopped
+
+  # Microservicio de Cursos
+  cursos-service:
+    build:
+      context: ./cursos
+      dockerfile: Dockerfile.cursos
+    container_name: cursos-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=mysql-cursos
+      - DB_PORT=3306
+      - DB_NAME=microservicio_cursos
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - API_KEY=prod_api_key_secure_123
+    depends_on:
+      mysql-cursos:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    volumes:
+      - ./logs/cursos:/app/logs
+
   # Base de datos MySQL para Cursos
   mysql-cursos:
     image: mysql:8.0
@@ -22,31 +64,25 @@ services:
       timeout: 20s
       retries: 10
 
-  # Microservicio de Cursos
-  cursos-service:
+  # Base de datos MongoDB
+  mongodb:
     build:
       context: .
-      dockerfile: Dockerfile.cursos
-    container_name: cursos-service
+      dockerfile: Dockerfile.mongodb
+    container_name: mongodb_mensajes
     ports:
-      - "8080:8080"
+      - "27017:27017"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - DB_HOST=mysql-cursos
-      - DB_PORT=3306
-      - DB_NAME=microservicio_cursos
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-      - API_KEY=prod_api_key_secure_123
-    depends_on:
-      mysql-cursos:
-        condition: service_healthy
-    networks:
-      - microservices-network
+      - MONGO_INITDB_DATABASE=mensajes_db
     volumes:
-      - ./logs/cursos:/app/logs
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - mensajes-network
+    restart: unless-stopped
 
 volumes:
+  mongodb_data:
   mysql_cursos_data:
 
 networks:

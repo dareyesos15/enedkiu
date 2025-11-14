@@ -9,7 +9,7 @@
 
 ## levantar el microservicio en servidor local
 - **Crear entorno virtual de python (recomendado):** `python -m venv venv`
-- **Iniciar entorno virtual de python** `./venv/Scripts/activate`
+- **Iniciar entorno virtual de python** `./venv/Scripts/activate` ó `source .venv/bin/activate`
 - **Instalar dependencias de python** `pip install -r requeriments.txt`
 
 ## Url de Servidor local de desarrollo por defecto

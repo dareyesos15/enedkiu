@@ -2,10 +2,66 @@ from flask import Flask, Blueprint, jsonify, request, Response
 from database.mongo_connection import db
 from bson import json_util
 from bson.objectid import ObjectId
+import os
+import logging
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
-"""METODOS GET"""
+# Cargar variables de entorno al inicio
+API_KEY = os.getenv('API_KEY', 'ingenieria_de_software_2')
+
+"""MIDDLEWARE - API GATEWAY"""
+@api.before_request
+def requerir_api_key():
+    # Endpoints públicos que no requieren API Key
+    public_endpoints = ['/api/health', '/api/']
+    
+    # Si el endpoint es público, permitir el acceso
+    if request.path in public_endpoints:
+        return None
+    
+    # Verificar si la API Key está configurada en el servidor
+    if not API_KEY or API_KEY == '':
+        logger.error("API_KEY no configurada en el servidor")
+        return jsonify({
+            "error": "API Key no configurada en el servidor"
+        }), 500
+    
+    # Obtener el header Authorization
+    auth_header = request.headers.get('Authorization')
+    
+    # Verificar que el header existe y tiene el formato correcto
+    if not auth_header or not auth_header.startswith('Bearer '):
+        logger.warning(f"Intento de acceso sin API Key a {request.path}")
+        return jsonify({
+            "error": "API Key requerida en header Authorization"
+        }), 401
+    
+    # Extraer la API Key del header
+    received_api_key = auth_header.replace('Bearer ', '')
+    
+    # Verificar que la API Key coincida
+    if received_api_key != API_KEY:
+        logger.warning(f"API Key inválida recibida para {request.path}")
+        return jsonify({
+            "error": "API Key inválida"
+        }), 401
+    
+    logger.info(f"API Key válida - Acceso permitido a {request.path}")
+
+# Agregar endpoint de health check
+@api.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        "status": "OK", 
+        "service": "mensajes",
+        "message": "Microservicio de mensajes funcionando correctamente"
+    })
+
 @api.route('/mensajes', methods=['GET'])
 def mensajes_todos():
     mensajes_cursor = db.find()
@@ -85,13 +141,12 @@ def mensaje_guardar():
         return jsonify({'mensaje': 'No se recibió ningún dato en el cuerpo de la petición.'}), 400
 
     try:
-        db.insert_one(mensaje)
+        result = db.insert_one(mensaje)
         
         # Devolvemos el ID del documento insertado como confirmación
-        mensaje['_id'] = str(mensaje['_id'])
         return jsonify({
             "mensaje": "Mensaje guardado con éxito",
-            "data": mensaje
+            "id": str(result.inserted_id)
         }), 201
     
     except Exception as e:
@@ -143,4 +198,3 @@ def mensaje_eliminar(id):
         return jsonify({'mensaje': 'Mensaje eliminado con éxito.'}), 200
     else:
         return jsonify({'mensaje': 'Mensaje no encontrado.'}), 404
-

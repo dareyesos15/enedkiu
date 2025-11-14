@@ -1,10 +1,52 @@
-FROM python:3
+# ============================================
+# DOCKERFILE - MICROSERVICIO MENSAJES (FLASK)
+# ============================================
 
-WORKDIR /usr/src/app
+# Usar imagen base de Python
+FROM python:3.9-slim
 
-COPY requirements.txt ./
+# Metadatos
+LABEL maintainer="enedkiu"
+LABEL description="Microservicio de Mensajes con Flask"
+LABEL version="1.0.0"
+
+# Establecer variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV FLASK_ENV=production
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio de la aplicación
+WORKDIR /app
+
+# Copiar requirements e instalar dependencias de Python
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copiar código de la aplicación
 COPY . .
 
-CMD [ "python", "./app.py" ]
+# Crear usuario no-root para seguridad
+RUN groupadd -r flask && useradd -r -g flask flask
+RUN chown -R flask:flask /app
+USER flask
+
+# Exponer puerto
+EXPOSE 5000
+
+# Variables de entorno por defecto
+ENV MONGODB_URL=mongodb://mongodb:27017/mensajes_db
+ENV API_KEY=ingenieria_de_software_2
+ENV PORT=5000
+ENV HOST=0.0.0.0
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:5001/api/health || exit 1
+
+# Comando de ejecución
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5001"]
