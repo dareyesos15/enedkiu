@@ -3,7 +3,7 @@
 */
 
 //URL base de la API de Laravel (asegurarse de que el puerto coincide).
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'http://172.28.0.10:9000/api';
 
 /**
  * Envía las credenciales de un usuario para iniciar sesión.
