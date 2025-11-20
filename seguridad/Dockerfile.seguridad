@@ -1,53 +1,37 @@
-# Etapa 1: Construcción con Composer
-FROM composer:2.7 AS vendor
+# Usa la imagen base de PHP 8.2 FPM (FastCGI Process Manager)
+FROM php:8.2-fpm
 
-WORKDIR /app
-
-# Copiamos los archivos de Composer primero (para aprovechar la caché de Docker)
-COPY composer.json composer.lock ./
-
-# Instalamos dependencias (sin dev para producción)
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-# Copiamos todo el código del proyecto
-COPY . .
-
-# Generamos autoload y ejecutamos scripts post-install
-RUN composer dump-autoload --optimize
-
-
-# Etapa 2: Imagen de aplicación PHP con Laravel
-FROM php:latest
-
-# Instalar dependencias del sistema necesarias para Laravel y extensiones PHP
-RUN apk add --no-cache \
-    bash \
-    zip \
-    unzip \
-    curl \
+# Instala dependencias y extensiones básicas para Laravel y Composer
+RUN apt-get update && apt-get install -y \
     git \
-    libpng-dev \
-    oniguruma-dev \
-    libxml2-dev \
-    icu-dev \
-    sqlite \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl
+    unzip \
+    libzip-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Configurar directorio de trabajo
+# Instala las extensiones de PHP (pdo_mysql y zip son las mínimas)
+RUN docker-php-ext-install pdo pdo_mysql zip
+
+# Instala Composer globalmente para manejar dependencias
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Define el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar los archivos del proyecto desde la etapa anterior
-COPY --from=vendor /app ./
+# Copia los archivos del proyecto (se asume que 'vendor' no está en .dockerignore)
+# NOTA: Para este simple Dockerfile, se asume que tu proyecto ya tiene el código
+# y los archivos de Composer listos.
+COPY . .
 
-# Copiar el archivo .env.example (opcional)
-# COPY .env.example .env
+# Instala dependencias de Composer si no lo has hecho fuera
+# Esta línea solo se recomienda si NO montas un volumen de código en docker-compose
+# RUN composer install --no-dev
 
-# Ajustar permisos (importante para Laravel)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Establece los permisos básicos para Laravel
+RUN chown -R www-data:www-data /var/www/html/storage \
+    && chown -R www-data:www-data /var/www/html/bootstrap/cache
 
-# Exponer el puerto del servidor PHP-FPM
+# Expone el puerto de PHP-FPM
 EXPOSE 9000
 
-# Comando por defecto (para usar con Nginx o php artisan serve)
+# Comando por defecto para iniciar PHP-FPM
 CMD ["php-fpm"]

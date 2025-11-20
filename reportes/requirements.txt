@@ -4,3 +4,9 @@ openpyxl
 requests
 weasyprint
 python-dotenv
+Werkzeug
+Jinja2
+itsdangerous
+click
+reportlab
+gunicorn
