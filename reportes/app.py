@@ -15,6 +15,3 @@ def home():
         "rutas_api": "/reportes/...",
         "lenguaje": "Python con Flask"
     })
-
-if __name__ == '__main__':
-    app.run(debug=True, port=6000)

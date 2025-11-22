@@ -11,6 +11,7 @@ load_dotenv(override=True)
 
 # Obtiene la URL base del servicio de Cursos
 CURSOS_SERVICE_URL = os.getenv('CURSOS_SERVICE_URL')
+API_KEY = os.getenv('API_KEY', 'ingeniera_de_software_2')
 
 # Definimos el tipo de retorno para ser más explícitos
 # Usamos 'Any' en la lista porque los objetos pueden ser listas o diccionarios únicos.
@@ -32,10 +33,16 @@ def _make_get_request(endpoint: str) -> Optional[ApiResponse]:
         return None
 
     url = f"{CURSOS_SERVICE_URL}{endpoint}"
+
+    headers = {
+        # Formato estándar para enviar tokens de API Key en headers
+        "Authorization": f"Bearer {API_KEY}",
+        "Accept": "application/json"
+    }
     
     try:
         # Realiza la petición GET
-        response = requests.get(url, timeout=10) # Se añade un timeout por seguridad
+        response = requests.get(url, headers=headers, timeout=10) # Se añade un timeout por seguridad
 
         # Lanza una excepción para códigos de estado 4xx o 5xx
         response.raise_for_status() 

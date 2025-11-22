@@ -14,7 +14,7 @@ public class TareaController {
     @Autowired
     TareaService tareaService;
 
-    @GetMapping("/tareas")
+    @GetMapping()
     public Iterable<TareaModel> getAllTareas() {
         return tareaService.getAllTareas();
     }

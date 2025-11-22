@@ -26,7 +26,7 @@ public class NotaController {
         return notaService.getOneNota(notaId);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public NotaModel saveNota(@RequestBody NotaModel nota) {
         return notaService.saveNota(nota);
     }
@@ -40,7 +40,6 @@ public class NotaController {
     public void deleteNota(@PathVariable Long notaId) {
         notaService.deleteNota(notaId);
     }
-    
 
     // Obtener las notas de un estudiante
     @GetMapping("/estudiante/{estudianteId}")

@@ -65,7 +65,25 @@ services:
       - mysql_cursos
       
   # ---------------------------------------------------------
-  # 5. Servidor web Nginx (API GATEWAY / PROXY INVERSO)
+  # 5. MICROSERVICIO REPORTES (FLASK - PYTHON) <-- NUEVO
+  # ---------------------------------------------------------
+  reportes:
+    build:
+      context: ./reportes
+      dockerfile: Dockerfile.reportes
+    container_name: microservicio_reportes
+    restart: unless-stopped
+    volumes:
+      - ./reportes:/usr/src/app
+    networks:
+      network_services:
+        # IPv4 Estático ELIMINADO para solucionar problemas de DNS
+    # Depende de Cursos, ya que consumirá datos de allí
+    depends_on:
+      - cursos
+      
+  # ---------------------------------------------------------
+  # 6. Servidor web Nginx (API GATEWAY / PROXY INVERSO)
   # ---------------------------------------------------------
   nginx:
     image: nginx:stable-alpine
@@ -82,10 +100,11 @@ services:
       - seguridad
       - mensajes
       - frontend 
-      - cursos # Nueva dependencia para el proxy
+      - cursos 
+      - reportes # Nueva dependencia para el proxy
 
   # =========================================================
-  # 6. BASES DE DATOS
+  # 7. BASES DE DATOS
   # =========================================================
   
   # Base de datos MySQL para 'seguridad'
@@ -138,7 +157,7 @@ services:
 volumes:
   dbdata_seguridad:
   dbdata_mensajes:
-  dbdata_cursos: # Nuevo volumen para la DB de cursos
+  dbdata_cursos: 
 
 networks:
   network_services:
